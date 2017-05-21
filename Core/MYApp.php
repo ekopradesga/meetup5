@@ -8,7 +8,6 @@ class MYApp
 	protected $core = array();
 	protected $controller = array();
 	protected $model = array();
-	protected $view = array();
 
 	protected $allclass = array();
 
@@ -17,32 +16,39 @@ class MYApp
 	 */
 	public function __construct()
 	{
-		require_once('Controller.php');
-		require_once('Loader.php');
+		define('VIEWPATH', APPPATH . "View" . DS);
+		define('MODELPATH', APPPATH . "Model" . DS);
+		define('CONTROLPATH', APPPATH . "Controller" . DS);
 
-		$this->controller = glob(ABSPATH . "App\Controller\*.php");
+		$this->controller = glob(CONTROLPATH . "*.php");
 		$this->allclass = array_merge($this->controller, $this->allclass);
 
-		$this->model = glob(ABSPATH . "App\Model\*.php");
+		$this->model = glob(MODELPATH . "*.php");
 		$this->allclass = array_merge($this->model, $this->allclass);
 
-		$this->view = glob(ABSPATH . "App\View\*.php");
-		$this->allclass = array_merge($this->view, $this->allclass);
+		$this->core = glob(COREPATH . "*.php");
+		$this->allclass = array_merge($this->core, $this->allclass);
 
 		$this->includeall();
 	}
 
 	public function start()
 	{
-		$home = new Home();
-		$home->Index();
+		$kelas = "home";
+		$metode = "index";
+
+		if (class_exists($kelas))
+			$start  = new $kelas();
+
+		if (method_exists($start, $metode))
+			$start->$metode();
 	}
 
-	function includeall()
+	private function includeall()
 	{
-		foreach($this->controller as $ctrl){
-			if ( ABSPATH . "\App\Core\MYApp.php" !=  $ctrl)
-				include_once($ctrl);
+		foreach($this->allclass as $ctrl){
+			if ( COREPATH . "MYApp.php" !=  $ctrl)
+				require_once($ctrl);
 		}
 	}
 }
