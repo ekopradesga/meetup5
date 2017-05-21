@@ -4,17 +4,26 @@ class Loader
 {
 	function __construct(){}
 
-	public function view($html, $notprint = false)
+	public function view($html, $data = array(), $notprint = false)
 	{
+		ob_start();
+		
 		if ( $html != "" )
-			$txt = file_get_contents(ABSPATH . "App/View/" . $html . ".php");
-		if ( $notprint )
+			include(VIEWPATH . $html . ".php");
+
+		$txt = ob_get_contents();
+		@ob_end_clean();
+
+		if ($notprint)
 			return $txt;
 		else
 			print $txt;
 	}
 
-	public function model($classes){}
-	public function Libraries(){}
+	public function model($models){}
+	
+	public function library($libs){}
+
+	public function helper($helps){}
 }
 ?>

@@ -11,6 +11,9 @@ class MYApp
 
 	protected $allclass = array();
 
+	protected $defController = "Home";
+	protected $defMethod = "index";
+
 	/*
 	 * konstruktor
 	 */
@@ -34,14 +37,31 @@ class MYApp
 
 	public function start()
 	{
-		$kelas = "home";
-		$metode = "index";
+		$this->router = new Router();
+
+		if ( $this->router->getSegment(1) == "" )
+			$kelas = $this->defController;
+		else 
+			$kelas = ucfirst($this->router->getSegment(1));
 
 		if (class_exists($kelas))
 			$start  = new $kelas();
+		else {
+			$start  = new Error404();
+			$start->index();
+		}
 
-		if (method_exists($start, $metode))
-			$start->$metode();
+		if ( $this->router->getSegment(2) == "" )
+			$meth = $this->defMethod;
+		else
+			$meth = $this->router->getSegment(2);
+
+		if (method_exists($start, $meth))
+			$start->$meth();
+		else {
+			$start = new Error404();
+			$start->index();
+		}
 	}
 
 	private function includeall()

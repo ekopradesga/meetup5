@@ -1,7 +1,11 @@
 <?php
 
-class Home extends Controller 
+/**
+ * 
+ */
+class Error404 extends Controller
 {
+	
 	function __construct()
 	{
 		parent::__construct();
@@ -9,6 +13,6 @@ class Home extends Controller
 
 	function index()
 	{
-		$this->load->view('homepage');
+		print "Error 404";
 	}
 }
